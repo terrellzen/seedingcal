@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>Seeding Calculator</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app" id="app">
+  <div class="tab-bar">
+    <button class="active" data-tab="calc">Calculator</button>
+    <button data-tab="settings">Settings</button>
+  </div>
+
+  <div class="tab-content active" id="tab-calc">
+    <div class="header">
+      <div>
+        <h1>Seeding Calculator</h1>
+        <p>Plan your cell culture experiment</p>
+      </div>
+      <div class="icon">🧪</div>
+    </div>
+
+    <div class="section-label">CELL LINE</div>
+    <div class="segmented" id="cellLineGroup">
+      <button data-line="U2OS">U2OS</button>
+      <button data-line="HEK293">HEK293</button>
+      <button data-line="HeLa">HeLa</button>
+    </div>
+
+    <div class="card">
+      <div class="card-header">PARAMETERS</div>
+
+      <div class="input-row">
+        <span class="sym">●</span>
+        <label>Viable cell conc.</label>
+        <input type="text" id="viableConc" inputmode="numeric" placeholder="2 500 000">
+        <span class="unit">cells/mL</span>
+      </div>
+
+      <div class="input-row">
+        <span class="sym">%</span>
+        <label>Viability</label>
+        <input type="text" id="viability" inputmode="numeric" placeholder="95">
+        <span class="unit">%</span>
+      </div>
+
+      <div class="input-row">
+        <span class="sym">↑</span>
+        <label>Start confluence</label>
+        <input type="text" id="startConf" inputmode="numeric" placeholder="30">
+        <span class="unit">%</span>
+      </div>
+
+      <div class="input-row">
+        <span class="sym">↓</span>
+        <label>End confluence</label>
+        <input type="text" id="endConf" inputmode="numeric" placeholder="80">
+        <span class="unit">%</span>
+      </div>
+    </div>
+
+    <div class="section-label">VESSEL</div>
+    <div class="vessel-selector" id="vesselSelector">
+      <span class="vsl-icon">📦</span>
+      <span class="placeholder" id="vesselPlaceholder">Tap to select a vessel</span>
+      <span class="vsl-detail" id="vesselDetail"></span>
+      <span class="arrow">›</span>
+    </div>
+
+    <button class="btn" id="calcBtn">⚙️ Calculate</button>
+    <div class="error" id="errorMsg"></div>
+
+    <div id="results">
+      <div class="card">
+        <div class="hero">
+          <div class="big-icon">📦</div>
+          <h2 id="resultVessel"></h2>
+          <div class="sub" id="resultMeta"></div>
+          <div class="badge" id="resultBadge"></div>
+        </div>
+
+        <div class="metrics">
+          <div class="metric">
+            <div class="ml">Cells needed</div>
+            <div class="mv accent" id="resCellsNeeded"></div>
+          </div>
+          <div class="metric">
+            <div class="ml">Volume to seed</div>
+            <div class="mv accent" id="resVolume"></div>
+          </div>
+          <div class="metric">
+            <div class="ml">Cells@end</div>
+            <div class="mv accent" id="resCellsEnd"></div>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <div class="detail-row"><span class="detail-label">Catalog No.</span><span class="detail-value" id="resCatNo"></span></div>
+          <div class="detail-divider"></div>
+          <div class="detail-row"><span class="detail-label">Surface area</span><span class="detail-value" id="resSA"></span></div>
+          <div class="detail-divider"></div>
+          <div class="detail-row"><span class="detail-label">Medium volume</span><span class="detail-value" id="resMed"></span></div>
+          <div class="detail-divider"></div>
+          <div class="detail-row"><span class="detail-label">Cells at 100%</span><span class="detail-value" id="resCells100"></span></div>
+          <div class="detail-divider"></div>
+          <div class="detail-row"><span class="detail-label">Seeding volume</span><span class="detail-value" id="resSeedVol"></span></div>
+        </div>
+
+        <div class="card-header growth-header">GROWTH PROJECTION</div>
+        <div class="metrics">
+          <div class="metric">
+            <div class="ml">Doublings needed</div>
+            <div class="mv" id="resDoublings"></div>
+          </div>
+          <div class="metric">
+            <div class="ml">Hours needed</div>
+            <div class="mv" id="resHours"></div>
+          </div>
+          <div class="metric">
+            <div class="ml">Conf. after incub.</div>
+            <div class="mv" id="resConfAfter"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-settings">
+    <div class="header">
+      <div>
+        <h1>Settings</h1>
+        <p>Cell parameters &amp; labware reference</p>
+      </div>
+      <div class="icon">⚙️</div>
+    </div>
+
+    <div class="section-label">CELL SIZE CORRECTION</div>
+    <div class="card" id="settingsFields"></div>
+
+    <div class="section-label">INCUBATION &amp; GROWTH</div>
+    <div class="card" id="settingsFields2"></div>
+
+    <div class="section-label">VESSEL REFERENCE</div>
+    <div class="card" id="vesselRef"></div>
+
+    <button class="btn" id="applyBtn">✓ Apply Settings</button>
+    <button class="btn outline" id="resetBtn">↺ Reset to Defaults</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="vesselModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h2>Select Vessel</h2>
+      <button class="cancel" id="modalCancel">Cancel</button>
+    </div>
+    <div class="modal-list" id="modalList"></div>
+    <div class="modal-confirm-wrap">
+      <button class="btn" id="modalConfirm">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
