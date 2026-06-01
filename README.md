@@ -1,5 +1,7 @@
 # Cell Seeding Calculator
 
+Disclaimer: AI Was Used for Coding and readme.
+
 A standalone web app for planning cell culture seeding experiments. Pick your cell line, vessel, and confluence targets — get the cell count, volume to seed, and growth projection.
 
 ## Usage
